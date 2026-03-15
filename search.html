@@ -3,7 +3,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>GYANI Search</title>
+<title>GYANI AI Search</title>
 
 <style>
 
@@ -48,13 +48,11 @@ border:1px solid #2c3e50;
 padding:20px;
 border-radius:12px;
 margin-bottom:30px;
-color:white;
 box-shadow:0 0 20px rgba(0,200,255,0.2);
 }
 
 .ai-box h2{
 color:#00eaff;
-margin-bottom:10px;
 }
 
 .result{
@@ -82,13 +80,13 @@ color:#9fb3c8;
 
 <div class="container">
 
-<h1>GYANI Search Results</h1>
+<h1>GYANI AI Search</h1>
 
 <input class="searchbar" id="searchInput">
 
 <button onclick="runSearch()">Search</button>
 
-<div id="aiAnswer" class="ai-box">
+<div class="ai-box">
 <h2>🧠 GYANI AI Answer</h2>
 <p id="aiText">Analyzing scientific sources...</p>
 </div>
@@ -110,12 +108,11 @@ window.location="search.html?q="+encodeURIComponent(q);
 }
 
 fetch("gyani_index.json")
-
-.then(response=>response.json())
-
+.then(res=>res.json())
 .then(data=>{
 
 let resultsDiv=document.getElementById("results");
+resultsDiv.innerHTML="";
 
 let results=[];
 
@@ -125,54 +122,47 @@ if(
 page.title.toLowerCase().includes(query.toLowerCase()) ||
 (page.keywords && page.keywords.includes(query.toLowerCase()))
 ){
-
 results.push(page);
-
 }
 
 });
 
-generateAIAnswer(query,results);
+generateAIAnswer(query);
 
 results.forEach(page=>{
-
 resultsDiv.innerHTML+=`
 <div class="result">
 <a href="${page.url}" target="_blank">${page.title}</a>
 <p>${page.description}</p>
 </div>
 `;
-
 });
 
 });
 
-function generateAIAnswer(query,results){
+function generateAIAnswer(query){
 
 let text="";
-
 query=query.toLowerCase();
 
 if(query.includes("black hole")){
-text="A black hole is a region of spacetime where gravity is so strong that nothing, not even light, can escape. They form when massive stars collapse and their gravity compresses matter into an extremely dense point.";
+text="A black hole is a region of spacetime where gravity becomes so strong that nothing, not even light, can escape.";
 }
 
 else if(query.includes("dna")){
-text="DNA (Deoxyribonucleic acid) is the molecule that carries genetic instructions for all living organisms. It determines biological development, reproduction and function.";
+text="DNA carries the genetic instructions used in growth, development, and reproduction of living organisms.";
 }
 
 else if(query.includes("galaxy")){
-text="A galaxy is a huge collection of billions of stars, gas, dust and dark matter bound together by gravity. Our solar system exists inside the Milky Way galaxy.";
+text="A galaxy is a massive system of stars, gas, dust, and dark matter bound together by gravity.";
 }
 
 else if(query.includes("atom")){
-text="An atom is the smallest unit of matter that retains the properties of a chemical element. It consists of a nucleus surrounded by electrons.";
+text="An atom is the smallest unit of matter that retains the properties of a chemical element.";
 }
 
 else{
-
-text="GYANI AI is analyzing scientific sources related to '"+query+"' and presenting the most relevant research links.";
-
+text="GYANI AI is analyzing scientific sources related to '"+query+"' and presenting relevant knowledge links.";
 }
 
 document.getElementById("aiText").innerText=text;
