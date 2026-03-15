@@ -1,38 +1,77 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
 
-<title>GYANI Search Results</title>
+<meta charset="UTF-8">
+<title>GYANI Search</title>
 
 <style>
 
 body{
-font-family: Arial;
-background:#0f2027;
+background:#020b14;
+font-family:Arial;
 color:white;
+margin:0;
 padding:40px;
 }
 
+.container{
+max-width:900px;
+margin:auto;
+}
+
 h1{
+color:#00eaff;
+}
+
+.searchbar{
+width:100%;
+padding:12px;
+font-size:18px;
+border-radius:10px;
+border:none;
+margin-bottom:20px;
+}
+
+button{
+background:#f9a602;
+border:none;
+padding:12px 20px;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+}
+
+.ai-box{
+background:#0c1622;
+border:1px solid #2c3e50;
+padding:20px;
+border-radius:12px;
 margin-bottom:30px;
+color:white;
+box-shadow:0 0 20px rgba(0,200,255,0.2);
+}
+
+.ai-box h2{
+color:#00eaff;
+margin-bottom:10px;
 }
 
 .result{
-background:#1b2836;
+background:#0f1c2c;
 padding:20px;
-margin-bottom:15px;
-border-radius:10px;
+border-radius:12px;
+margin-bottom:20px;
 }
 
 .result a{
-color:#f59e0b;
-font-size:22px;
+color:#ffa500;
+font-size:20px;
 text-decoration:none;
 }
 
-.result a:hover{
-text-decoration:underline;
+.result p{
+color:#9fb3c8;
 }
 
 </style>
@@ -41,92 +80,103 @@ text-decoration:underline;
 
 <body>
 
+<div class="container">
+
 <h1>GYANI Search Results</h1>
+
+<input class="searchbar" id="searchInput">
+
+<button onclick="runSearch()">Search</button>
+
+<div id="aiAnswer" class="ai-box">
+<h2>🧠 GYANI AI Answer</h2>
+<p id="aiText">Analyzing scientific sources...</p>
+</div>
 
 <div id="results"></div>
 
+</div>
+
 <script>
 
-/* read search query */
+const params=new URLSearchParams(window.location.search);
+const query=params.get("q") || "";
 
-let params = new URLSearchParams(window.location.search)
-let query = params.get("q")
+document.getElementById("searchInput").value=query;
 
-let resultsDiv = document.getElementById("results")
-
-if(!query){
-resultsDiv.innerHTML = "No search query."
+function runSearch(){
+let q=document.getElementById("searchInput").value;
+window.location="search.html?q="+encodeURIComponent(q);
 }
-
-/* load index database */
 
 fetch("gyani_index.json")
 
-.then(response => response.json())
+.then(response=>response.json())
 
-.then(data => {
+.then(data=>{
 
-query = query.toLowerCase()
+let resultsDiv=document.getElementById("results");
 
-let words = query.split(" ")
+let results=[];
 
-let results = []
+data.forEach(page=>{
 
-/* search algorithm */
+if(page.title.toLowerCase().includes(query.toLowerCase()) || page.keywords.includes(query.toLowerCase())){
 
-data.forEach(page => {
-
-let score = 0
-
-let title = page.title.toLowerCase()
-let keywords = page.keywords.toLowerCase()
-
-words.forEach(word => {
-
-if(title.includes(word)){
-score += 5
-}
-
-if(keywords.includes(word)){
-score += 2
-}
-
-})
-
-if(score > 0){
-
-results.push({
-page: page,
-score: score
-})
+results.push(page);
 
 }
 
-})
+});
 
-/* sort best results first */
+generateAIAnswer(query,results);
 
-results.sort((a,b) => b.score - a.score)
+results.forEach(page=>{
 
-/* show results */
-
-results.forEach(item => {
-
-let p = item.page
-
-resultsDiv.innerHTML += `
+resultsDiv.innerHTML+=`
 <div class="result">
-<a href="${p.url}" target="_blank">${p.title}</a>
-<p>${p.description}</p>
+<a href="${page.url}" target="_blank">${page.title}</a>
+<p>${page.description}</p>
 </div>
-`
+`;
 
-})
+});
 
-})
+});
+
+function generateAIAnswer(query,results){
+
+let text="";
+
+query=query.toLowerCase();
+
+if(query.includes("black hole")){
+text="A black hole is a region of spacetime where gravity is so strong that nothing, not even light, can escape. They form when massive stars collapse and their gravity compresses matter into an extremely dense point.";
+}
+
+else if(query.includes("dna")){
+text="DNA (Deoxyribonucleic acid) is the molecule that carries genetic instructions for all living organisms. It determines biological development, reproduction and function.";
+}
+
+else if(query.includes("galaxy")){
+text="A galaxy is a huge collection of billions of stars, gas, dust and dark matter bound together by gravity. Our solar system exists inside the Milky Way galaxy.";
+}
+
+else if(query.includes("atom")){
+text="An atom is the smallest unit of matter that retains the properties of a chemical element. It consists of a nucleus surrounded by electrons.";
+}
+
+else{
+
+text="GYANI AI is analyzing scientific sources related to '"+query+"' and presenting the most relevant research links.";
+
+}
+
+document.getElementById("aiText").innerText=text;
+
+}
 
 </script>
 
 </body>
-
 </html>
