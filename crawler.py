@@ -12,28 +12,13 @@ seed_urls = [
 visited = set()
 database = []
 
-headers = {
-    "User-Agent": "GYANI-Bot"
-}
-
 for url in seed_urls:
 
-    print("Crawling:", url)
-
     try:
+        print("Crawling:", url)
 
-        response = requests.get(url, headers=headers)
-
+        response = requests.get(url)
         soup = BeautifulSoup(response.text, "html.parser")
-
-        title = soup.title.string
-
-        database.append({
-            "title": title,
-            "url": url,
-            "description": "Science topic",
-            "keywords": title.lower()
-        })
 
         for link in soup.find_all("a"):
 
@@ -47,17 +32,17 @@ for url in seed_urls:
 
                     visited.add(full_url)
 
+                    title = href.replace("/wiki/", "")
+
                     database.append({
-                        "title": href.replace("/wiki/", ""),
+                        "title": title,
                         "url": full_url,
-                        "description": "Wikipedia science page",
-                        "keywords": href.lower()
+                        "description": "Wikipedia science page"
                     })
 
-    except Exception as e:
-        print("Error:", e)
+    except:
+        pass
 
-# save database
 
 with open("gyani_index.json", "w") as f:
     json.dump(database, f, indent=2)
