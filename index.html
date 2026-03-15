@@ -1,150 +1,77 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
 
+<meta charset="UTF-8">
 <title>GYANI</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
 
 <style>
 
 body{
 margin:0;
-overflow:hidden;
-background:black;
-background-image:url("https://www.transparenttextures.com/patterns/stardust.png");
+background:#020b14;
+font-family:Arial;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+height:100vh;
 }
 
-/* Earth canvas */
+.container{
+text-align:center;
+}
 
-#earthCanvas{
-width:600px;
-height:600px;
+.logo{
+font-size:60px;
+color:#00eaff;
+margin-bottom:30px;
+}
+
+.searchbar{
+width:500px;
+padding:15px;
+font-size:18px;
+border-radius:12px;
+border:none;
+}
+
+button{
+margin-top:20px;
+background:#f9a602;
+border:none;
+padding:12px 30px;
+border-radius:10px;
+font-size:18px;
+cursor:pointer;
 }
 
 </style>
 
 </head>
 
-<body class="text-white">
+<body>
 
-<div class="flex h-screen items-center justify-between px-20">
+<div class="container">
 
-<!-- LEFT SIDE (SEARCH UI) -->
+<div class="logo">GYANI</div>
 
-<div class="flex flex-col items-center space-y-6">
-
-<img src="gyani-logo.png" class="w-48">
-
-<form action="search.html" class="flex gap-3">
+<form action="/search">
 
 <input
-class="w-96 px-5 py-3 rounded-full text-black shadow-lg"
+class="searchbar"
 name="q"
 placeholder="Search physics, biology, chemistry, cosmology"
-/>
-
-<button
-class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full shadow-lg"
+required
 >
-Search
-</button>
+
+<br>
+
+<button type="submit">Search</button>
 
 </form>
 
 </div>
 
-<!-- RIGHT SIDE EARTH -->
-
-<canvas id="earthCanvas"></canvas>
-
-</div>
-
-<script>
-
-/* THREE.JS SCENE */
-
-const scene = new THREE.Scene()
-
-const camera = new THREE.PerspectiveCamera(
-75,
-1,
-0.1,
-1000
-)
-
-const renderer = new THREE.WebGLRenderer({
-canvas:document.getElementById("earthCanvas"),
-antialias:true
-})
-
-renderer.setSize(600,600)
-
-/* LIGHT */
-
-const light = new THREE.PointLight(0xffffff,2)
-light.position.set(10,10,10)
-scene.add(light)
-
-const ambient = new THREE.AmbientLight(0x404040)
-scene.add(ambient)
-
-/* EARTH */
-
-const geometry = new THREE.SphereGeometry(3,64,64)
-
-const loader = new THREE.TextureLoader()
-
-const earthTexture = loader.load(
-"https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/earthmap1k.jpg"
-)
-
-const material = new THREE.MeshPhongMaterial({
-map:earthTexture
-})
-
-const earth = new THREE.Mesh(geometry,material)
-
-scene.add(earth)
-
-camera.position.z = 6
-
-/* SATELLITE */
-
-const satGeometry = new THREE.BoxGeometry(0.3,0.2,0.2)
-const satMaterial = new THREE.MeshBasicMaterial({color:0xffffff})
-
-const satellite = new THREE.Mesh(satGeometry,satMaterial)
-
-scene.add(satellite)
-
-let angle = 0
-
-function animate(){
-
-requestAnimationFrame(animate)
-
-/* rotate earth */
-
-earth.rotation.y += 0.003
-
-/* satellite orbit */
-
-angle += 0.01
-
-satellite.position.x = 5*Math.cos(angle)
-satellite.position.z = 5*Math.sin(angle)
-
-renderer.render(scene,camera)
-
-}
-
-animate()
-
-</script>
-
 </body>
-
 </html>
