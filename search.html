@@ -121,7 +121,10 @@ let results=[];
 
 data.forEach(page=>{
 
-if(page.title.toLowerCase().includes(query.toLowerCase()) || page.keywords.includes(query.toLowerCase())){
+if(
+page.title.toLowerCase().includes(query.toLowerCase()) ||
+(page.keywords && page.keywords.includes(query.toLowerCase()))
+){
 
 results.push(page);
 
