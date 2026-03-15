@@ -1,48 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
-<title>GYANI</title>
+<title>GYANI AI Search</title>
 
 <style>
+
 body{
-margin:0;
 background:#020b14;
 font-family:Arial;
 color:white;
-display:flex;
-align-items:center;
-justify-content:center;
-height:100vh;
+margin:0;
+padding:40px;
 }
 
 .container{
+max-width:900px;
+margin:auto;
 text-align:center;
 }
 
-.logo{
-font-size:60px;
+h1{
 color:#00eaff;
-margin-bottom:30px;
 }
 
 .searchbar{
-width:500px;
-padding:15px;
+width:100%;
+padding:12px;
 font-size:18px;
-border-radius:12px;
+border-radius:10px;
 border:none;
+margin-bottom:20px;
 }
 
 button{
-margin-top:20px;
 background:#f9a602;
 border:none;
-padding:12px 30px;
+padding:12px 20px;
 border-radius:10px;
-font-size:18px;
+font-size:16px;
 cursor:pointer;
 }
+
+.ai-box{
+background:#0c1622;
+border:1px solid #2c3e50;
+padding:20px;
+border-radius:12px;
+margin-top:30px;
+margin-bottom:30px;
+box-shadow:0 0 20px rgba(0,200,255,0.2);
+}
+
+.ai-box h2{
+color:#00eaff;
+}
+
+.result{
+background:#0f1c2c;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+text-align:left;
+}
+
+.result a{
+color:#ffa500;
+font-size:20px;
+text-decoration:none;
+}
+
+.result p{
+color:#9fb3c8;
+}
+
 </style>
 
 </head>
@@ -51,24 +83,89 @@ cursor:pointer;
 
 <div class="container">
 
-<div class="logo">GYANI</div>
+<h1>GYANI AI Search</h1>
 
-<form action="search.html">
+<input class="searchbar" id="searchInput" placeholder="Search physics, biology, chemistry, cosmology">
 
-<input
-class="searchbar"
-name="q"
-placeholder="Search physics, biology, chemistry, cosmology"
-required
->
+<button onclick="runSearch()">Search</button>
 
-<br>
+<div id="aiAnswer" class="ai-box" style="display:none;">
+<h2>🧠 GYANI AI Answer</h2>
+<p id="aiText"></p>
+</div>
 
-<button type="submit">Search</button>
-
-</form>
+<div id="results"></div>
 
 </div>
+
+<script>
+
+function runSearch(){
+
+let query=document.getElementById("searchInput").value.toLowerCase();
+
+document.getElementById("aiAnswer").style.display="block";
+
+generateAIAnswer(query);
+
+fetch("gyani_index.json")
+.then(res=>res.json())
+.then(data=>{
+
+let resultsDiv=document.getElementById("results");
+resultsDiv.innerHTML="";
+
+data.forEach(page=>{
+
+if(
+page.title.toLowerCase().includes(query) ||
+(page.keywords && page.keywords.includes(query))
+){
+
+resultsDiv.innerHTML+=`
+<div class="result">
+<a href="${page.url}" target="_blank">${page.title}</a>
+<p>${page.description}</p>
+</div>
+`;
+
+}
+
+});
+
+});
+
+}
+
+function generateAIAnswer(query){
+
+let text="";
+
+if(query.includes("black hole")){
+text="A black hole is a region of spacetime where gravity is so strong that nothing, not even light, can escape.";
+}
+
+else if(query.includes("dna")){
+text="DNA carries the genetic instructions used in the growth and reproduction of living organisms.";
+}
+
+else if(query.includes("galaxy")){
+text="A galaxy is a large system of stars, gas, dust, and dark matter bound together by gravity.";
+}
+
+else if(query.includes("atom")){
+text="An atom is the smallest unit of matter that retains the properties of a chemical element.";
+}
+
+else{
+text="GYANI AI is analyzing scientific sources related to '"+query+"' and presenting relevant research links.";
+}
+
+document.getElementById("aiText").innerText=text;
+
+}
+
+</script>
 
 </body>
 </html>
