@@ -125,7 +125,44 @@ results.push(page);
 
 });
 
-generateAIAnswer(query);
+function generateAIAnswer(query){
+
+let text="";
+query=query.toLowerCase();
+
+if(query.includes("black hole")){
+text="Black holes are regions where gravity is so strong that nothing can escape. They form when massive stars collapse.";
+}
+
+else if(query.includes("dna")){
+text="DNA is the molecule that stores genetic information in living organisms.";
+}
+
+else if(query.includes("galaxy")){
+text="A galaxy is a gravitational system of billions of stars, gas and dark matter.";
+}
+
+else if(query.includes("atom")){
+text="An atom is the smallest unit of matter composed of protons, neutrons and electrons.";
+}
+
+else if(query.includes("quantum")){
+text="Quantum physics studies the behavior of matter and energy at atomic and subatomic scales.";
+}
+
+else if(query.includes("neuron")){
+text="Neurons are specialized cells that transmit information throughout the nervous system.";
+}
+
+else{
+
+text="GYANI AI is analyzing scientific sources related to '"+query+"' and presenting relevant research links.";
+
+}
+
+document.getElementById("aiText").innerText=text;
+
+}
 
 results.forEach(page=>{
 
