@@ -1,0 +1,35 @@
+name: Update GYANI Index
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # runs once every day
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install libraries
+        run: |
+          pip install requests beautifulsoup4
+
+      - name: Run crawler
+        run: |
+          python crawler.py
+
+      - name: Commit updated index
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add gyani_index.json
+          git commit -m "Auto update search index" || echo "No changes"
+          git push
