@@ -31,22 +31,20 @@ from{background-position:0 0;}
 to{background-position:-10000px 5000px;}
 }
 
-/* MAIN CONTAINER */
+/* SEARCH AREA */
 
 .container{
 position:absolute;
 left:10%;
 top:50%;
 transform:translateY(-50%);
-width:400px;
+width:420px;
 text-align:center;
 }
 
-/* LOGO */
-
 .logo{
 width:130px;
-margin-bottom:25px;
+margin-bottom:30px;
 }
 
 /* SEARCH BAR */
@@ -57,7 +55,16 @@ padding:15px;
 font-size:18px;
 border-radius:25px;
 border:none;
+outline:none;
 margin-bottom:20px;
+
+box-shadow:0 0 15px rgba(0,200,255,0.5);
+animation:glow 2s infinite alternate;
+}
+
+@keyframes glow{
+from{box-shadow:0 0 10px rgba(0,200,255,0.3);}
+to{box-shadow:0 0 25px rgba(0,200,255,0.9);}
 }
 
 /* BUTTON */
@@ -81,12 +88,20 @@ transform:translateY(-50%);
 width:420px;
 height:420px;
 border-radius:50%;
-background:radial-gradient(circle at 30% 30%, #2a9df4, #003566);
+
+/* Earth colors */
+
+background:
+radial-gradient(circle at 30% 30%, #3aa6ff, #003566 70%),
+radial-gradient(circle at 60% 60%, #2ecc71 20%, transparent 21%),
+radial-gradient(circle at 40% 70%, #27ae60 18%, transparent 19%),
+radial-gradient(circle at 70% 40%, #2ecc71 15%, transparent 16%);
+
 box-shadow:
 0 0 60px rgba(0,150,255,0.8),
-inset -30px -30px 60px rgba(0,0,0,0.6);
+inset -40px -40px 80px rgba(0,0,0,0.6);
 
-animation:rotateEarth 25s linear infinite;
+animation:rotateEarth 40s linear infinite;
 }
 
 @keyframes rotateEarth{
@@ -100,11 +115,12 @@ to{transform:translateY(-50%) rotate(360deg);}
 position:absolute;
 right:10%;
 top:50%;
-width:20px;
-height:20px;
+width:12px;
+height:12px;
 background:white;
 border-radius:50%;
-animation:orbit 8s linear infinite;
+
+animation:orbit 6s linear infinite;
 }
 
 @keyframes orbit{
@@ -113,7 +129,6 @@ to{transform:rotate(360deg) translateX(240px) rotate(-360deg);}
 }
 
 </style>
-
 </head>
 
 <body>
@@ -124,7 +139,8 @@ to{transform:rotate(360deg) translateX(240px) rotate(-360deg);}
 
 <img src="gyani-logo.png" class="logo">
 
-<input class="searchbar" id="searchInput" placeholder="Search physics, biology, chemistry, cosmology">
+<input class="searchbar" id="searchInput"
+placeholder="Search physics, biology, chemistry, cosmology">
 
 <br>
 
