@@ -1,124 +1,79 @@
-<!DOCTYPE html>
-<html>
-<head>
-
-<meta charset="UTF-8">
-<title>GYANI Search</title>
-
-<style>
-
-body{
-background:#020b14;
-font-family:Arial;
-color:white;
-margin:0;
-padding:40px;
-}
-
-.container{
-max-width:900px;
-margin:auto;
-}
-
-h1{
-color:#00eaff;
-}
-
-.searchbar{
-width:100%;
-padding:12px;
-font-size:18px;
-border-radius:10px;
-border:none;
-margin-bottom:20px;
-}
-
-button{
-background:#f9a602;
-border:none;
-padding:12px 20px;
-border-radius:10px;
-font-size:16px;
-cursor:pointer;
-}
-
-.result{
-background:#0f1c2c;
-padding:20px;
-border-radius:12px;
-margin-bottom:20px;
-}
-
-.result a{
-color:#ffa500;
-font-size:20px;
-text-decoration:none;
-}
-
-.result p{
-color:#9fb3c8;
-}
-
-</style>
-
-</head>
-
-<body>
-
-<div class="container">
-
-<h1>GYANI Search Results</h1>
-
-<input class="searchbar" id="searchInput">
-
-<button onclick="runSearch()">Search</button>
-
-<div id="results"></div>
-
-</div>
-
 <script>
 
-const params=new URLSearchParams(window.location.search);
-const query=params.get("q") || "";
+const params = new URLSearchParams(window.location.search);
+const query = (params.get("q") || "").toLowerCase();
 
-document.getElementById("searchInput").value=query;
+document.getElementById("searchInput").value = query;
 
 function runSearch(){
-let q=document.getElementById("searchInput").value;
-window.location="search.html?q="+encodeURIComponent(q);
+  const q = document.getElementById("searchInput").value;
+  window.location = "search.html?q=" + encodeURIComponent(q);
+}
+
+/* normalize text */
+function normalize(text){
+  return text
+    .toLowerCase()
+    .replace(/_/g," ")
+    .replace(/[^a-z0-9 ]/g,"");
+}
+
+/* simple similarity check */
+function similar(a,b){
+
+  if(a.includes(b)) return true;
+  if(b.includes(a)) return true;
+
+  const wordsA = a.split(" ");
+  const wordsB = b.split(" ");
+
+  for(let w1 of wordsA){
+    for(let w2 of wordsB){
+      if(w1.startsWith(w2) || w2.startsWith(w1)){
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 fetch("gyani_index.json")
-
-.then(response=>response.json())
-
+.then(r=>r.json())
 .then(data=>{
 
-let resultsDiv=document.getElementById("results");
+  const resultsDiv = document.getElementById("results");
+  resultsDiv.innerHTML="";
 
-let q=query.toLowerCase().replace(/_/g," ");
+  const q = normalize(query);
 
-data.forEach(page=>{
+  let found = false;
 
-let title=page.title.toLowerCase().replace(/_/g," ");
+  data.forEach(page=>{
 
-if(title.includes(q)){
+    const title = normalize(page.title);
+    const desc = normalize(page.description || "");
 
-resultsDiv.innerHTML+=`
-<div class="result">
-<a href="${page.url}" target="_blank">${page.title}</a>
-<p>${page.description}</p>
-</div>
-`;
+    if(
+      similar(title,q) ||
+      similar(desc,q)
+    ){
 
-}
+      found = true;
 
-});
+      resultsDiv.innerHTML += `
+      <div class="result">
+        <a href="${page.url}" target="_blank">${page.title}</a>
+        <p>${page.description}</p>
+      </div>`;
+    }
+
+  });
+
+  if(!found){
+    resultsDiv.innerHTML = "<p>No results found yet. Try different words.</p>";
+  }
 
 });
 
 </script>
-
-</body>
-</html>
