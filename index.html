@@ -1,31 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <title>GYANI</title>
 
 <style>
 
 body{
-background:#020b14;
+background:#000814;
 font-family:Arial;
 color:white;
 margin:0;
-display:flex;
-justify-content:center;
-align-items:center;
 height:100vh;
+overflow:hidden;
+}
+
+/* STAR BACKGROUND */
+
+.stars{
+position:fixed;
+width:100%;
+height:100%;
+background:url("https://www.transparenttextures.com/patterns/stardust.png");
+animation:moveStars 200s linear infinite;
+}
+
+@keyframes moveStars{
+from{background-position:0 0;}
+to{background-position:-10000px 5000px;}
+}
+
+/* MAIN CONTAINER */
+
+.container{
+position:absolute;
+left:10%;
+top:50%;
+transform:translateY(-50%);
+width:400px;
 text-align:center;
 }
 
-.container{
-width:600px;
-}
+/* LOGO */
 
 .logo{
-width:120px;
-margin-bottom:20px;
+width:130px;
+margin-bottom:25px;
 }
+
+/* SEARCH BAR */
 
 .searchbar{
 width:100%;
@@ -36,6 +60,8 @@ border:none;
 margin-bottom:20px;
 }
 
+/* BUTTON */
+
 button{
 background:#f9a602;
 border:none;
@@ -45,10 +71,54 @@ font-size:18px;
 cursor:pointer;
 }
 
+/* EARTH */
+
+.earth{
+position:absolute;
+right:10%;
+top:50%;
+transform:translateY(-50%);
+width:420px;
+height:420px;
+border-radius:50%;
+background:radial-gradient(circle at 30% 30%, #2a9df4, #003566);
+box-shadow:
+0 0 60px rgba(0,150,255,0.8),
+inset -30px -30px 60px rgba(0,0,0,0.6);
+
+animation:rotateEarth 25s linear infinite;
+}
+
+@keyframes rotateEarth{
+from{transform:translateY(-50%) rotate(0deg);}
+to{transform:translateY(-50%) rotate(360deg);}
+}
+
+/* SATELLITE */
+
+.satellite{
+position:absolute;
+right:10%;
+top:50%;
+width:20px;
+height:20px;
+background:white;
+border-radius:50%;
+animation:orbit 8s linear infinite;
+}
+
+@keyframes orbit{
+from{transform:rotate(0deg) translateX(240px) rotate(0deg);}
+to{transform:rotate(360deg) translateX(240px) rotate(-360deg);}
+}
+
 </style>
+
 </head>
 
 <body>
+
+<div class="stars"></div>
 
 <div class="container">
 
@@ -61,6 +131,9 @@ cursor:pointer;
 <button onclick="searchGyani()">Search</button>
 
 </div>
+
+<div class="earth"></div>
+<div class="satellite"></div>
 
 <script>
 
