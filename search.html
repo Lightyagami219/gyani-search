@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 
 <meta charset="UTF-8">
@@ -48,13 +48,11 @@ border:1px solid #2c3e50;
 padding:20px;
 border-radius:12px;
 margin-bottom:30px;
-color:white;
 box-shadow:0 0 20px rgba(0,200,255,0.2);
 }
 
 .ai-box h2{
 color:#00eaff;
-margin-bottom:10px;
 }
 
 .result{
@@ -110,9 +108,7 @@ window.location="search.html?q="+encodeURIComponent(q);
 }
 
 fetch("gyani_index.json")
-
 .then(response=>response.json())
-
 .then(data=>{
 
 let resultsDiv=document.getElementById("results");
@@ -121,7 +117,7 @@ let results=[];
 
 data.forEach(page=>{
 
-if(page.title.toLowerCase().includes(query.toLowerCase()) || page.keywords.includes(query.toLowerCase())){
+if(page.title.toLowerCase().includes(query.toLowerCase())){
 
 results.push(page);
 
@@ -129,7 +125,7 @@ results.push(page);
 
 });
 
-generateAIAnswer(query,results);
+generateAIAnswer(query);
 
 results.forEach(page=>{
 
@@ -144,32 +140,26 @@ resultsDiv.innerHTML+=`
 
 });
 
-function generateAIAnswer(query,results){
+function generateAIAnswer(query){
 
 let text="";
 
 query=query.toLowerCase();
 
 if(query.includes("black hole")){
-text="A black hole is a region of spacetime where gravity is so strong that nothing, not even light, can escape. They form when massive stars collapse and their gravity compresses matter into an extremely dense point.";
+text="A black hole is a region of spacetime where gravity is so strong that nothing can escape it.";
 }
 
 else if(query.includes("dna")){
-text="DNA (Deoxyribonucleic acid) is the molecule that carries genetic instructions for all living organisms. It determines biological development, reproduction and function.";
+text="DNA carries genetic information used in growth, development and reproduction of living organisms.";
 }
 
 else if(query.includes("galaxy")){
-text="A galaxy is a huge collection of billions of stars, gas, dust and dark matter bound together by gravity. Our solar system exists inside the Milky Way galaxy.";
-}
-
-else if(query.includes("atom")){
-text="An atom is the smallest unit of matter that retains the properties of a chemical element. It consists of a nucleus surrounded by electrons.";
+text="A galaxy is a massive system of stars, gas, dust and dark matter bound together by gravity.";
 }
 
 else{
-
-text="GYANI AI is analyzing scientific sources related to '"+query+"' and presenting the most relevant research links.";
-
+text="GYANI AI is analyzing scientific sources related to '"+query+"'.";
 }
 
 document.getElementById("aiText").innerText=text;
