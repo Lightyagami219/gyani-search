@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>GYANI Search Results</title>
+
+<style>
+
+body{
+font-family: Arial;
+background:#0f2027;
+color:white;
+padding:40px;
+}
+
+h1{
+margin-bottom:30px;
+}
+
+.result{
+background:#1b2836;
+padding:20px;
+margin-bottom:15px;
+border-radius:10px;
+}
+
+.result a{
+color:#f59e0b;
+font-size:22px;
+text-decoration:none;
+}
+
+.result a:hover{
+text-decoration:underline;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>GYANI Search Results</h1>
+
+<div id="results"></div>
+
+<script>
+
+/* read search query */
+
+let params = new URLSearchParams(window.location.search)
+let query = params.get("q")
+
+let resultsDiv = document.getElementById("results")
+
+if(!query){
+resultsDiv.innerHTML = "No search query."
+}
+
+/* load index database */
+
+fetch("gyani_index.json")
+
+.then(response => response.json())
+
+.then(data => {
+
+query = query.toLowerCase()
+
+let words = query.split(" ")
+
+let results = []
+
+/* search algorithm */
+
+data.forEach(page => {
+
+let score = 0
+
+let title = page.title.toLowerCase()
+let keywords = page.keywords.toLowerCase()
+
+words.forEach(word => {
+
+if(title.includes(word)){
+score += 5
+}
+
+if(keywords.includes(word)){
+score += 2
+}
+
+})
+
+if(score > 0){
+
+results.push({
+page: page,
+score: score
+})
+
+}
+
+})
+
+/* sort best results first */
+
+results.sort((a,b) => b.score - a.score)
+
+/* show results */
+
+results.forEach(item => {
+
+let p = item.page
+
+resultsDiv.innerHTML += `
+<div class="result">
+<a href="${p.url}" target="_blank">${p.title}</a>
+<p>${p.description}</p>
+</div>
+`
+
+})
+
+})
+
+</script>
+
+</body>
+
+</html>
