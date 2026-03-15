@@ -8,38 +8,19 @@
 <style>
 
 body{
-background:#000814;
+background:#020b14;
 font-family:Arial;
 color:white;
 margin:0;
 height:100vh;
-overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+text-align:center;
 }
-
-/* STAR BACKGROUND */
-
-.stars{
-position:fixed;
-width:100%;
-height:100%;
-background:url("https://www.transparenttextures.com/patterns/stardust.png");
-animation:moveStars 200s linear infinite;
-}
-
-@keyframes moveStars{
-from{background-position:0 0;}
-to{background-position:-10000px 5000px;}
-}
-
-/* SEARCH AREA */
 
 .container{
-position:absolute;
-left:10%;
-top:50%;
-transform:translateY(-50%);
-width:420px;
-text-align:center;
+width:500px;
 }
 
 .logo{
@@ -47,27 +28,14 @@ width:130px;
 margin-bottom:30px;
 }
 
-/* SEARCH BAR */
-
 .searchbar{
 width:100%;
 padding:15px;
 font-size:18px;
 border-radius:25px;
 border:none;
-outline:none;
 margin-bottom:20px;
-
-box-shadow:0 0 15px rgba(0,200,255,0.5);
-animation:glow 2s infinite alternate;
 }
-
-@keyframes glow{
-from{box-shadow:0 0 10px rgba(0,200,255,0.3);}
-to{box-shadow:0 0 25px rgba(0,200,255,0.9);}
-}
-
-/* BUTTON */
 
 button{
 background:#f9a602;
@@ -78,62 +46,10 @@ font-size:18px;
 cursor:pointer;
 }
 
-/* EARTH */
-
-.earth{
-position:absolute;
-right:10%;
-top:50%;
-transform:translateY(-50%);
-width:420px;
-height:420px;
-border-radius:50%;
-
-/* Earth colors */
-
-background:
-radial-gradient(circle at 30% 30%, #3aa6ff, #003566 70%),
-radial-gradient(circle at 60% 60%, #2ecc71 20%, transparent 21%),
-radial-gradient(circle at 40% 70%, #27ae60 18%, transparent 19%),
-radial-gradient(circle at 70% 40%, #2ecc71 15%, transparent 16%);
-
-box-shadow:
-0 0 60px rgba(0,150,255,0.8),
-inset -40px -40px 80px rgba(0,0,0,0.6);
-
-animation:rotateEarth 40s linear infinite;
-}
-
-@keyframes rotateEarth{
-from{transform:translateY(-50%) rotate(0deg);}
-to{transform:translateY(-50%) rotate(360deg);}
-}
-
-/* SATELLITE */
-
-.satellite{
-position:absolute;
-right:10%;
-top:50%;
-width:12px;
-height:12px;
-background:white;
-border-radius:50%;
-
-animation:orbit 6s linear infinite;
-}
-
-@keyframes orbit{
-from{transform:rotate(0deg) translateX(240px) rotate(0deg);}
-to{transform:rotate(360deg) translateX(240px) rotate(-360deg);}
-}
-
 </style>
 </head>
 
 <body>
-
-<div class="stars"></div>
 
 <div class="container">
 
@@ -147,9 +63,6 @@ placeholder="Search physics, biology, chemistry, cosmology">
 <button onclick="searchGyani()">Search</button>
 
 </div>
-
-<div class="earth"></div>
-<div class="satellite"></div>
 
 <script>
 
