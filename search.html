@@ -42,19 +42,6 @@ font-size:16px;
 cursor:pointer;
 }
 
-.ai-box{
-background:#0c1622;
-border:1px solid #2c3e50;
-padding:20px;
-border-radius:12px;
-margin-bottom:30px;
-box-shadow:0 0 20px rgba(0,200,255,0.2);
-}
-
-.ai-box h2{
-color:#00eaff;
-}
-
 .result{
 background:#0f1c2c;
 padding:20px;
@@ -86,11 +73,6 @@ color:#9fb3c8;
 
 <button onclick="runSearch()">Search</button>
 
-<div id="aiAnswer" class="ai-box">
-<h2>🧠 GYANI AI Answer</h2>
-<p id="aiText">Analyzing scientific sources...</p>
-</div>
-
 <div id="results"></div>
 
 </div>
@@ -108,63 +90,20 @@ window.location="search.html?q="+encodeURIComponent(q);
 }
 
 fetch("gyani_index.json")
+
 .then(response=>response.json())
+
 .then(data=>{
 
 let resultsDiv=document.getElementById("results");
 
-let results=[];
+let q=query.toLowerCase().replace(/_/g," ");
 
 data.forEach(page=>{
 
-if(page.title.toLowerCase().includes(query.toLowerCase())){
+let title=page.title.toLowerCase().replace(/_/g," ");
 
-results.push(page);
-
-}
-
-});
-
-function generateAIAnswer(query){
-
-let text="";
-query=query.toLowerCase();
-
-if(query.includes("black hole")){
-text="Black holes are regions where gravity is so strong that nothing can escape. They form when massive stars collapse.";
-}
-
-else if(query.includes("dna")){
-text="DNA is the molecule that stores genetic information in living organisms.";
-}
-
-else if(query.includes("galaxy")){
-text="A galaxy is a gravitational system of billions of stars, gas and dark matter.";
-}
-
-else if(query.includes("atom")){
-text="An atom is the smallest unit of matter composed of protons, neutrons and electrons.";
-}
-
-else if(query.includes("quantum")){
-text="Quantum physics studies the behavior of matter and energy at atomic and subatomic scales.";
-}
-
-else if(query.includes("neuron")){
-text="Neurons are specialized cells that transmit information throughout the nervous system.";
-}
-
-else{
-
-text="GYANI AI is analyzing scientific sources related to '"+query+"' and presenting relevant research links.";
-
-}
-
-document.getElementById("aiText").innerText=text;
-
-}
-
-results.forEach(page=>{
+if(title.includes(q)){
 
 resultsDiv.innerHTML+=`
 <div class="result">
@@ -173,115 +112,13 @@ resultsDiv.innerHTML+=`
 </div>
 `;
 
+}
+
 });
 
 });
-
-function generateAIAnswer(query){
-
-let text="";
-
-query=query.toLowerCase();
-
-if(query.includes("black hole")){
-text="A black hole is a region of spacetime where gravity is so strong that nothing can escape it.";
-}
-
-else if(query.includes("dna")){
-text="DNA carries genetic information used in growth, development and reproduction of living organisms.";
-}
-
-else if(query.includes("galaxy")){
-text="A galaxy is a massive system of stars, gas, dust and dark matter bound together by gravity.";
-}
-
-else{
-text="GYANI AI is analyzing scientific sources related to '"+query+"'.";
-}
-
-document.getElementById("aiText").innerText=text;
-
-}
 
 </script>
-<script>
 
-const params = new URLSearchParams(window.location.search);
-const query = params.get("q") || "";
-
-document.getElementById("searchInput").value = query;
-
-function runSearch(){
-let q=document.getElementById("searchInput").value;
-window.location="search.html?q="+encodeURIComponent(q);
-}
-
-fetch("gyani_index.json")
-.then(res => res.json())
-.then(data => {
-
-let resultsDiv=document.getElementById("results");
-resultsDiv.innerHTML="";
-
-let q=query.toLowerCase().replace(/_/g," ");
-
-let found=false;
-
-data.forEach(page=>{
-
-let title=page.title.toLowerCase().replace(/_/g," ");
-
-if(title.includes(q)){
-
-found=true;
-
-resultsDiv.innerHTML += `
-<div class="result">
-<a href="${page.url}" target="_blank">${page.title}</a>
-<p>${page.description}</p>
-</div>
-`;
-
-}
-
-});
-
-if(!found){
-resultsDiv.innerHTML="<p>No results found.</p>";
-}
-
-generateAIAnswer(q);
-
-});
-
-function generateAIAnswer(q){
-
-let text="";
-
-if(q.includes("black hole")){
-text="Black holes are regions of spacetime where gravity becomes extremely strong due to collapsed massive stars.";
-}
-
-else if(q.includes("hydrogen")){
-text="Hydrogen is the lightest chemical element and the most abundant element in the universe.";
-}
-
-else if(q.includes("dna")){
-text="DNA stores genetic information used for the development and functioning of living organisms.";
-}
-
-else if(q.includes("galaxy")){
-text="A galaxy is a massive gravitational system of stars, gas, dust and dark matter.";
-}
-
-else{
-text="GYANI AI is analyzing scientific sources related to '"+q+"'.";
-}
-
-document.getElementById("aiText").innerText=text;
-
-}
-
-</script>
 </body>
 </html>
