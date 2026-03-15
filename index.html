@@ -85,7 +85,8 @@ color:#9fb3c8;
 
 <h1>GYANI AI Search</h1>
 
-<input class="searchbar" id="searchInput" placeholder="Search physics, biology, chemistry, cosmology">
+<input class="searchbar" id="searchInput"
+placeholder="Search physics, biology, chemistry, cosmology">
 
 <button onclick="runSearch()">Search</button>
 
@@ -100,13 +101,26 @@ color:#9fb3c8;
 
 <script>
 
+/* Read query from URL */
+const params = new URLSearchParams(window.location.search);
+const urlQuery = params.get("q");
+
+if(urlQuery){
+document.getElementById("searchInput").value=urlQuery;
+runSearch();
+}
+
 function runSearch(){
 
 let query=document.getElementById("searchInput").value.toLowerCase();
 
+if(!query) return;
+
 document.getElementById("aiAnswer").style.display="block";
 
 generateAIAnswer(query);
+
+/* Load index */
 
 fetch("gyani_index.json")
 .then(res=>res.json())
