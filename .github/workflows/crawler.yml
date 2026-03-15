@@ -1,4 +1,6 @@
 name: Update GYANI Index
+permissions:
+  contents: write
 
 on:
   schedule:
