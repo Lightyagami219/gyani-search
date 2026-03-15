@@ -1,8 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>GYANI Search</title>
+
+<style>
+body{
+background:#020b14;
+font-family:Arial;
+color:white;
+margin:0;
+padding:40px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.searchbar{
+width:100%;
+padding:12px;
+font-size:18px;
+border-radius:10px;
+border:none;
+margin-bottom:20px;
+}
+
+.result{
+background:#0f1c2c;
+padding:20px;
+border-radius:12px;
+margin-bottom:20px;
+}
+
+.result a{
+color:#ffa500;
+font-size:20px;
+text-decoration:none;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>GYANI Search</h1>
+
+<input class="searchbar" id="searchInput">
+
+<button onclick="runSearch()">Search</button>
+
+<div id="results"></div>
+
+</div>
+
 <script>
 
 function runSearch(){
-  let q=document.getElementById("searchInput").value;
-  window.location="search.html?q="+encodeURIComponent(q);
+let q=document.getElementById("searchInput").value;
+window.location="search.html?q="+encodeURIComponent(q);
 }
 
 window.onload=function(){
@@ -12,36 +71,21 @@ const query=(params.get("q") || "").toLowerCase();
 
 document.getElementById("searchInput").value=query;
 
-function normalize(text){
-  return text.toLowerCase().replace(/_/g," ").replace(/[^a-z0-9 ]/g,"");
-}
-
 fetch("gyani_index.json")
-.then(response=>response.json())
+.then(r=>r.json())
 .then(data=>{
 
 let resultsDiv=document.getElementById("results");
-resultsDiv.innerHTML="";
-
-let q=normalize(query);
 
 data.forEach(page=>{
 
-let title=normalize(page.title);
-let desc=normalize(page.description || "");
+let title=page.title.toLowerCase().replace(/_/g," ");
 
-/* fuzzy matching */
-if(
-  title.includes(q) ||
-  desc.includes(q) ||
-  title.split(" ").some(w => q.includes(w)) ||
-  q.split(" ").some(w => title.includes(w))
-){
+if(title.includes(query)){
 
 resultsDiv.innerHTML+=`
 <div class="result">
 <a href="${page.url}" target="_blank">${page.title}</a>
-<p>${page.description}</p>
 </div>
 `;
 
@@ -49,11 +93,11 @@ resultsDiv.innerHTML+=`
 
 });
 
-})
-.catch(err=>{
-document.getElementById("results").innerHTML="Search database error.";
 });
 
 }
 
 </script>
+
+</body>
+</html>
