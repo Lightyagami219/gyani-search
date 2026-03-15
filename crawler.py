@@ -1,69 +1,78 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-from collections import deque
 
-headers = {
-    "User-Agent": "Mozilla/5.0"
-}
-
-seed_urls = [
-    "https://en.wikipedia.org/wiki/Physics",
-    "https://en.wikipedia.org/wiki/Biology",
-    "https://en.wikipedia.org/wiki/Chemistry",
-    "https://en.wikipedia.org/wiki/Cosmology"
-]
-
-visited = set()
-queue = deque(seed_urls)
 database = []
 
-max_pages = 500
+def add_result(title, url, description):
+    database.append({
+        "title": title,
+        "url": url,
+        "description": description
+    })
 
-while queue and len(visited) < max_pages:
+# ---------- Wikipedia ----------
+wiki_topics = [
+    "Physics",
+    "Biology",
+    "Chemistry",
+    "Astronomy",
+    "Cosmology",
+    "Genetics"
+]
 
-    url = queue.popleft()
+for topic in wiki_topics:
 
-    if url in visited:
-        continue
+    url = f"https://en.wikipedia.org/wiki/{topic}"
 
-    try:
-        print("Crawling:", url)
+    r = requests.get(url, headers={"User-Agent":"Mozilla/5.0"})
+    soup = BeautifulSoup(r.text,"html.parser")
 
-        response = requests.get(url, headers=headers, timeout=10)
-        soup = BeautifulSoup(response.text, "html.parser")
+    for link in soup.select("a[href^='/wiki/']")[:200]:
 
-        title = soup.title.string if soup.title else url
+        href = link.get("href")
 
-        description = ""
-        p = soup.find("p")
-        if p:
-            description = p.text.strip()
+        if ":" not in href:
 
-        database.append({
-            "title": title,
-            "url": url,
-            "description": description
-        })
+            full = "https://en.wikipedia.org" + href
+            title = href.replace("/wiki/","")
 
-        visited.add(url)
+            add_result(title, full, "Wikipedia science page")
 
-        for link in soup.find_all("a", href=True):
+# ---------- NASA ----------
+try:
+    nasa = requests.get("https://www.nasa.gov/")
+    soup = BeautifulSoup(nasa.text,"html.parser")
 
-            href = link["href"]
+    for link in soup.find_all("a"):
 
-            if href.startswith("/wiki/") and ":" not in href:
+        href = link.get("href")
 
-                full_url = "https://en.wikipedia.org" + href
+        if href and "nasa.gov" in href:
 
-                if full_url not in visited:
-                    queue.append(full_url)
+            add_result(link.text.strip(), href, "NASA science article")
 
-    except Exception as e:
-        print("Error:", e)
+except:
+    pass
 
+
+# ---------- arXiv papers ----------
+try:
+    arxiv = requests.get("https://arxiv.org/list/astro-ph/new")
+    soup = BeautifulSoup(arxiv.text,"html.parser")
+
+    for link in soup.find_all("a", title="Abstract"):
+
+        paper = "https://arxiv.org" + link.get("href")
+
+        add_result("arXiv Research Paper", paper, "Scientific research paper")
+
+except:
+    pass
+
+
+# ---------- Save index ----------
+with open("gyani_index.json","w",encoding="utf-8") as f:
+    json.dump(database,f,indent=2,ensure_ascii=False)
 
 print("Indexed pages:", len(database))
-
-with open("gyani_index.json", "w", encoding="utf-8") as f:
-    json.dump(database, f, indent=2, ensure_ascii=False)
