@@ -204,6 +204,84 @@ document.getElementById("aiText").innerText=text;
 }
 
 </script>
+<script>
 
+const params = new URLSearchParams(window.location.search);
+const query = params.get("q") || "";
+
+document.getElementById("searchInput").value = query;
+
+function runSearch(){
+let q=document.getElementById("searchInput").value;
+window.location="search.html?q="+encodeURIComponent(q);
+}
+
+fetch("gyani_index.json")
+.then(res => res.json())
+.then(data => {
+
+let resultsDiv=document.getElementById("results");
+resultsDiv.innerHTML="";
+
+let q=query.toLowerCase().replace(/_/g," ");
+
+let found=false;
+
+data.forEach(page=>{
+
+let title=page.title.toLowerCase().replace(/_/g," ");
+
+if(title.includes(q)){
+
+found=true;
+
+resultsDiv.innerHTML += `
+<div class="result">
+<a href="${page.url}" target="_blank">${page.title}</a>
+<p>${page.description}</p>
+</div>
+`;
+
+}
+
+});
+
+if(!found){
+resultsDiv.innerHTML="<p>No results found.</p>";
+}
+
+generateAIAnswer(q);
+
+});
+
+function generateAIAnswer(q){
+
+let text="";
+
+if(q.includes("black hole")){
+text="Black holes are regions of spacetime where gravity becomes extremely strong due to collapsed massive stars.";
+}
+
+else if(q.includes("hydrogen")){
+text="Hydrogen is the lightest chemical element and the most abundant element in the universe.";
+}
+
+else if(q.includes("dna")){
+text="DNA stores genetic information used for the development and functioning of living organisms.";
+}
+
+else if(q.includes("galaxy")){
+text="A galaxy is a massive gravitational system of stars, gas, dust and dark matter.";
+}
+
+else{
+text="GYANI AI is analyzing scientific sources related to '"+q+"'.";
+}
+
+document.getElementById("aiText").innerText=text;
+
+}
+
+</script>
 </body>
 </html>
