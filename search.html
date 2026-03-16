@@ -1,37 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>GYANI Search</title>
+
+<title>GYANI Results</title>
 
 <style>
+
 body{
 background:#020b14;
 font-family:Arial;
 color:white;
-margin:0;
 padding:40px;
-}
-
-.container{
-max-width:900px;
-margin:auto;
-}
-
-.searchbar{
-width:100%;
-padding:12px;
-font-size:18px;
-border-radius:10px;
-border:none;
-margin-bottom:20px;
 }
 
 .result{
 background:#0f1c2c;
 padding:20px;
-border-radius:12px;
-margin-bottom:20px;
+margin-bottom:15px;
+border-radius:10px;
 }
 
 .result a{
@@ -39,53 +25,41 @@ color:#ffa500;
 font-size:20px;
 text-decoration:none;
 }
+
 </style>
 
 </head>
 
 <body>
 
-<div class="container">
-
-<h1>GYANI Search</h1>
-
-<input class="searchbar" id="searchInput">
-
-<button onclick="runSearch()">Search</button>
+<h1>GYANI Search Results</h1>
 
 <div id="results"></div>
 
-</div>
-
 <script>
 
-function runSearch(){
-let q=document.getElementById("searchInput").value;
-window.location="search.html?q="+encodeURIComponent(q);
-}
-
-window.onload=function(){
-
 const params=new URLSearchParams(window.location.search);
-const query=(params.get("q") || "").toLowerCase();
-
-document.getElementById("searchInput").value=query;
+const query=(params.get("q")||"").toLowerCase();
 
 fetch("gyani_index.json")
 .then(r=>r.json())
 .then(data=>{
 
-let resultsDiv=document.getElementById("results");
+let results=document.getElementById("results");
 
 data.forEach(page=>{
 
-let title=page.title.toLowerCase().replace(/_/g," ");
+let title=page.title.toLowerCase();
 
-if(title.includes(query)){
+if(
+title.includes(query) ||
+query.split(" ").some(word=>title.includes(word))
+){
 
-resultsDiv.innerHTML+=`
+results.innerHTML+=`
 <div class="result">
 <a href="${page.url}" target="_blank">${page.title}</a>
+<p>${page.description}</p>
 </div>
 `;
 
@@ -94,8 +68,6 @@ resultsDiv.innerHTML+=`
 });
 
 });
-
-}
 
 </script>
 
