@@ -1,78 +1,75 @@
-import requests
-from bs4 import BeautifulSoup
 import json
 
-database = []
+topics = [
 
-def add_result(title, url, description):
-    database.append({
-        "title": title,
-        "url": url,
-        "description": description
-    })
+# physics
+"Newton's laws of motion",
+"Law of universal gravitation",
+"Thermodynamics",
+"Electromagnetism",
+"Quantum mechanics",
+"Relativity",
+"Momentum",
+"Kinetic energy",
+"Potential energy",
+"Wave motion",
 
-# ---------- Wikipedia ----------
-wiki_topics = [
-    "Physics",
-    "Biology",
-    "Chemistry",
-    "Astronomy",
-    "Cosmology",
-    "Genetics"
+# chemistry
+"Atom",
+"Molecule",
+"Periodic table",
+"Hydrogen",
+"Oxygen",
+"Carbon",
+"Covalent bond",
+"Ionic bond",
+"Organic chemistry",
+"Inorganic chemistry",
+
+# biology
+"Cell biology",
+"DNA",
+"RNA",
+"Genetics",
+"Evolution",
+"Natural selection",
+"Photosynthesis",
+"Respiration",
+"Neuron",
+"Protein synthesis",
+
+# astronomy
+"Black hole",
+"Supernova",
+"Galaxy",
+"Milky Way",
+"Dark matter",
+"Dark energy",
+"Event horizon",
+"Neutron star",
+"Exoplanet",
+"Cosmic microwave background",
+
+# cosmology
+"Big Bang",
+"Inflation theory",
+"Cosmic expansion",
+"Multiverse theory",
+"Space-time",
+"Gravitational waves",
 ]
 
-for topic in wiki_topics:
+database=[]
 
-    url = f"https://en.wikipedia.org/wiki/{topic}"
+for topic in topics:
 
-    r = requests.get(url, headers={"User-Agent":"Mozilla/5.0"})
-    soup = BeautifulSoup(r.text,"html.parser")
+    database.append({
+        "title": topic,
+        "url": "https://en.wikipedia.org/wiki/" + topic.replace(" ","_"),
+        "description": "Scientific topic about " + topic
+    })
 
-    for link in soup.select("a[href^='/wiki/']")[:200]:
+with open("gyani_index.json","w") as f:
+    json.dump(database,f,indent=2)
 
-        href = link.get("href")
-
-        if ":" not in href:
-
-            full = "https://en.wikipedia.org" + href
-            title = href.replace("/wiki/","")
-
-            add_result(title, full, "Wikipedia science page")
-
-# ---------- NASA ----------
-try:
-    nasa = requests.get("https://www.nasa.gov/")
-    soup = BeautifulSoup(nasa.text,"html.parser")
-
-    for link in soup.find_all("a"):
-
-        href = link.get("href")
-
-        if href and "nasa.gov" in href:
-
-            add_result(link.text.strip(), href, "NASA science article")
-
-except:
-    pass
-
-
-# ---------- arXiv papers ----------
-try:
-    arxiv = requests.get("https://arxiv.org/list/astro-ph/new")
-    soup = BeautifulSoup(arxiv.text,"html.parser")
-
-    for link in soup.find_all("a", title="Abstract"):
-
-        paper = "https://arxiv.org" + link.get("href")
-
-        add_result("arXiv Research Paper", paper, "Scientific research paper")
-
-except:
-    pass
-
-
-# ---------- Save index ----------
-with open("gyani_index.json","w",encoding="utf-8") as f:
-    json.dump(database,f,indent=2,ensure_ascii=False)
-
-print("Indexed pages:", len(database))
+print("Indexed pages:",len(database))
