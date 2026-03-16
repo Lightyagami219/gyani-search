@@ -1,121 +1,41 @@
 import json
+import random
+
+subjects = [
+"physics","quantum physics","mechanics","thermodynamics","electromagnetism",
+"astronomy","cosmology","astrophysics","particle physics","nuclear physics",
+"biology","genetics","cell biology","evolution","microbiology",
+"chemistry","organic chemistry","biochemistry"
+]
+
+concepts = [
+"law","theory","principle","equation","experiment",
+"effect","model","process","reaction","mechanism"
+]
+
+objects = [
+"atom","molecule","black hole","galaxy","neutron star","supernova",
+"electron","proton","neutron","cell","dna","rna","enzyme",
+"planet","star","cosmic radiation","dark matter","dark energy"
+]
 
 database=[]
 
-topics=[
+for i in range(3000):
 
-# physics
-"Newton's laws of motion",
-"Law of universal gravitation",
-"Thermodynamics",
-"Electromagnetism",
-"Quantum mechanics",
-"Relativity",
-"Momentum",
-"Kinetic energy",
-"Potential energy",
-"Wave motion",
-"Classical mechanics",
-"Angular momentum",
-"Force",
-"Work and energy",
-"Entropy",
-"Maxwell equations",
-"Planck constant",
-"Schrodinger equation",
-"Heisenberg uncertainty principle",
-"Quantum field theory",
-
-# astronomy
-"Black hole",
-"Supernova",
-"Galaxy",
-"Milky Way",
-"Dark matter",
-"Dark energy",
-"Event horizon",
-"Neutron star",
-"Pulsar",
-"Exoplanet",
-"Cosmic microwave background",
-"Big Bang",
-"Inflation theory",
-"Cosmic expansion",
-"Gravitational waves",
-"Space-time",
-
-# biology
-"Cell biology",
-"DNA",
-"RNA",
-"Genetics",
-"Evolution",
-"Natural selection",
-"Photosynthesis",
-"Respiration",
-"Neuron",
-"Protein synthesis",
-"Enzyme",
-"Metabolism",
-"Immune system",
-"Stem cells",
-"Cell division",
-"Mitosis",
-"Meiosis",
-
-# chemistry
-"Atom",
-"Molecule",
-"Periodic table",
-"Hydrogen",
-"Helium",
-"Carbon",
-"Oxygen",
-"Nitrogen",
-"Covalent bond",
-"Ionic bond",
-"Organic chemistry",
-"Inorganic chemistry",
-"Chemical reaction",
-"Acid base reaction",
-"Redox reaction",
-"Catalyst",
-
-# cosmology
-"Multiverse theory",
-"Cosmic inflation",
-"Large scale structure of universe",
-"Dark energy density",
-"Cosmic background radiation",
-]
-
-for topic in topics:
+    title = (
+        random.choice(subjects).title() + " " +
+        random.choice(concepts).title() + " of " +
+        random.choice(objects).title()
+    )
 
     database.append({
-        "title": topic,
-        "url": "https://en.wikipedia.org/wiki/" + topic.replace(" ","_"),
-        "description": "Scientific topic about " + topic
+        "title": title,
+        "url": "https://en.wikipedia.org/wiki/" + title.replace(" ","_"),
+        "description": "Scientific topic about " + title
     })
 
-# create many variations automatically
-
-extra=[]
-
-for item in database:
-
-    words=item["title"].split()
-
-    for w in words:
-
-        extra.append({
-            "title": w + " science",
-            "url": item["url"],
-            "description": item["description"]
-        })
-
-database.extend(extra)
-
-with open("gyani_index.json","w") as f:
+with open("gyani_index.json","w",encoding="utf-8") as f:
     json.dump(database,f,indent=2)
 
 print("Indexed pages:",len(database))
